@@ -128,9 +128,9 @@ def build_net_and_losses(model, is_dual, model_kwarg, loss_type, num_classes,
     return net, criterion, head_type, feat_dim
 
 
-def _append_experiment_log(summary_dir, summary):
-    """把一次 CV 实验的结果追加记录到 output/EXPERIMENTS.md（自动建表头）。"""
-    exp_path = os.path.join(PROJECT_ROOT, "output", "EXPERIMENTS.md")
+def _append_experiment_log(summary_dir, summary, output_dir="output"):
+    """把一次 CV 实验的结果追加记录到 {output_dir}/EXPERIMENTS.md（自动建表头）。"""
+    exp_path = os.path.join(PROJECT_ROOT, output_dir, "EXPERIMENTS.md")
     header = (
         "| 时间 | 运行名 | 模型 | 数据集 | 损失 | 参数(s,m,K) | 调度器 | online_aug | mixup | Acc(%)±std | F1(%) | 目录 | tag |\n"
         "|------|--------|------|--------|------|------------|--------|-----------|------|------------|-------|------|-----|\n"
@@ -444,9 +444,9 @@ def main(features_dir, features_version, cv_folds, model, epochs, batch_size,
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
-    # ── 追加记录到 EXPERIMENTS.md ──
+    # ── 追加记录到 {output_dir}/EXPERIMENTS.md ──
     try:
-        exp_path = _append_experiment_log(cv_root, summary)
+        exp_path = _append_experiment_log(cv_root, summary, output_dir)
         click.echo(f"  实验记录:     {exp_path}")
     except Exception as e:
         click.echo(f"  [警告] 实验记录写入失败: {e}", err=True)
