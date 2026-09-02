@@ -16,11 +16,22 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-for fp in ['C:/Windows/Fonts/msyh.ttc', 'C:/Windows/Fonts/simhei.ttf']:
+# 中文字体（Windows / Linux 通用探测，找不到则用默认字体，中文可能显示方块但不报错）
+_FONT_CANDIDATES = [
+    'C:/Windows/Fonts/msyh.ttc', 'C:/Windows/Fonts/simhei.ttc',
+    '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
+    '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc',
+    '/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc',
+    '/usr/share/fonts/truetype/arphic/uming.ttc',
+]
+for fp in _FONT_CANDIDATES:
     if os.path.exists(fp):
-        font_manager.fontManager.addfont(fp)
-        plt.rcParams['font.family'] = font_manager.FontProperties(fname=fp).get_name()
-        break
+        try:
+            font_manager.fontManager.addfont(fp)
+            plt.rcParams['font.family'] = font_manager.FontProperties(fname=fp).get_name()
+            break
+        except Exception:
+            continue
 plt.rcParams['axes.unicode_minus'] = False
 
 LOSS_NAMES = ['cross_entropy', 'cosface', 'arcface', 'sub_arcface']
