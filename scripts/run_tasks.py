@@ -27,7 +27,7 @@ def _find_python():
                  os.path.join(PROJECT_ROOT, "python")):
         if os.path.exists(cand):
             return cand
-    return "python3"
+    return "python"
 
 PY = _find_python()
 CV = os.path.join(PROJECT_ROOT, "scripts", "cv_train.py")
