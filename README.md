@@ -122,9 +122,13 @@ python scripts/cv_train.py --help
 **输出**（每个实验一个目录）：
 ```
 output/{model}_v{ver}_cv5/
-├── best_model.pt          # 最优模型权重
-├── config.json            # 实验配置
-├── confusion_matrix.png   # 混淆矩阵
+├──fold1
+|   ├── best_model.pt          # 最优模型权重
+|   ├── config.json            # 实验配置
+|   ├── confusion_matrix.png  # 混淆矩阵
+├──fold2
+|   ├── ...
+├── ...
 └── summary.json           # 5 折汇总（acc/f1 均值±std）
 ```
 每次实验后自动追加一行记录到 `{output_dir}/EXPERIMENTS.md`。
