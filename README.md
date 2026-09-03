@@ -9,10 +9,7 @@
 - [数据与特征](#数据与特征)
 - [脚本总览](#脚本总览)
 - [训练流程](#训练流程)
-- [实验设计（三组对比实验）](#实验设计三组对比实验)
 - [模型与损失](#模型与损失)
-- [输出文件说明](#输出文件说明)
-- [常见问题](#常见问题)
 
 ## 项目结构
 
@@ -133,3 +130,28 @@ output/{model}_v{ver}_cv5/
 ```
 每次实验后自动追加一行记录到 `{output_dir}/EXPERIMENTS.md`。
 
+## 模型与损失
+
+### 模型（`src/net_creator.py` 注册表 + `--model` 参数）
+
+
+| 系列     | 单分支                        | 双分支（dual_ 前缀）     |
+| -------- | ----------------------------- | ------------------------ |
+| CNN      | cnn / cnn2 / cnn_se / cnn2_se | dual_cnn / dual_cnn2_se  |
+| CNN+CBAM | cnn_cbam / cnn2_cbam          | dual_cnn_cbam            |
+| LSTM     | lstm / lstm_se                | dual_lstm / dual_lstm_se |
+| ResNet   | resnet / resnet_se            | dual_resnet_se           |
+
+双分支 = mel 频谱与 MFCC 分别由独立编码器提取后拼接融合。
+`create_model('dual_cnn_se', input_size=(128,126))` 传元组即触发双分支。
+
+### 损失（`src/train/losses.py`）
+
+
+| 损失          | 最优参数（网格搜索结论） | 说明                     |
+| ------------- | ------------------------ | ------------------------ |
+| cross_entropy | -                        | 基准                     |
+| focal         | gamma=2.0                | 类别不平衡               |
+| cosface       | s=64, m=0.2              | 余弦间隔                 |
+| arcface       | s=16, m=0.3              | 角度间隔                 |
+| sub_arcface   | s=128, m=0.3, K=4        | 多子中心（应对工况差异） |
